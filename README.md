@@ -90,7 +90,7 @@ You should return true to continue polling and false to stop polling. It has the
 
 ```javascript
 function onSuccess(response) {
-  // You can do anything with this response, may be add to an array of some state of your react component
+  // You can do anything with this response, may be add to an array of some state of your vue component
   // return true to continue polling
   // return false to stop polling
 }
