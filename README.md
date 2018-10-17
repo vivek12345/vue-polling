@@ -24,7 +24,7 @@ npm i vue-polling --save
     :interval="3000"
     :retryCount="3" // this is optional
     :onSuccess="handleSuccess" 
-    :onFailure="handleFailure"> // this is optional
+    :onFailure="handleFailure" // this is optional
     :method="GET"
     :headers="headers object" // this is optional
     :body="JSON.stringify(data)" // data to send in a post call. Should be stringified always
@@ -119,4 +119,4 @@ MIT © [viveknayyar](https://github.com/vivek12345)
 
 - [x] Complete README
 - [ ] Add Examples and Demo
-- [ ] Test Suite
+- [x] Test Suite

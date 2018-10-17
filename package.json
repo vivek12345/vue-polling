@@ -43,6 +43,11 @@
       "git add"
     ]
   },
+  "husky": {
+    "hooks": {
+     "pre-commit": "npm test"
+    }
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
@@ -58,6 +63,7 @@
     "css-loader": "^1.0.0",
     "eslint": "^5.4.0",
     "eslint-plugin-vue": "^5.0.0-beta.3",
+    "husky": "^1.1.2",
     "jest": "^23.5.0",
     "jest-cli": "^23.5.0",
     "prettier": "^1.14.2",

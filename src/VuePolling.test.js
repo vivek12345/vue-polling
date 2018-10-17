@@ -9,6 +9,7 @@ describe('<VuePolling />', () => {
     url = 'http://localhost/session/status';
   describe('success test cases', () => {
     beforeAll(() => {
+      window.console.error = jest.fn();
       window.fetch = jest.fn().mockImplementation(() =>
         Promise.resolve({
           json: () => {
@@ -108,27 +109,26 @@ describe('<VuePolling />', () => {
           });
         }).toThrow();
       });
-      test.skip('startPolling should set isPolling state to true, _ismounted to true and call runPolling function', () => {
-        const mockedRunPolling = jest.spyOn(ReactPolling.prototype, 'runPolling');
-        mockedRunPolling.mockImplementation();
+      test('startPolling should set isPolling state to true, _ismounted to true and call runPolling function', () => {
+        const mockedRunPolling = jest.fn();
         const wrapper = shallowMount(VuePolling, {
           propsData: {
             url: url,
             onSuccess: onSuccess,
             onFailure: onFailure
           },
+          methods: {
+            runPolling: mockedRunPolling
+          },
           slots: {
             'vue-polling': '<div id="pollingSlot" slot="vue-polling"><p>Hi I am polling</p></div>'
           }
         });
-        wrapper.update();
-        expect(wrapper.state().isPolling).toBeTruthy();
-        expect(wrapper.instance()._ismounted).toBeTruthy();
+        expect(wrapper.vm.isPolling).toBeTruthy();
+        expect(wrapper.vm._ismounted).toBeTruthy();
         expect(mockedRunPolling).toHaveBeenCalledTimes(1);
-        mockedRunPolling.mockRestore();
-        mockedRunPolling.mockClear();
       });
-      test.skip('stopPolling should set isPolling to false, _ismounted to false and poll to null', () => {
+      test('stopPolling should set isPolling to false, _ismounted to false and poll to null', () => {
         const wrapper = shallowMount(VuePolling, {
           propsData: {
             url: url,
@@ -139,11 +139,93 @@ describe('<VuePolling />', () => {
             'vue-polling': '<div id="pollingSlot" slot="vue-polling"><p>Hi I am polling</p></div>'
           }
         });
-        wrapper.instance().stopPolling();
-        wrapper.update();
-        expect(wrapper.state().isPolling).toBeFalsy();
-        expect(wrapper.instance()._ismounted).toBeTruthy();
-        expect(wrapper.instance().poll).toBeNull();
+        wrapper.vm.stopPolling();
+        expect(wrapper.vm.isPolling).toBeFalsy();
+        expect(wrapper.vm._ismounted).toBeTruthy();
+        expect(wrapper.vm.poll).toBeNull();
+      });
+    });
+    describe('timer events', () => {
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+      afterEach(() => {
+        jest.clearAllTimers();
+      });
+      test('run Polling should call setTimeout and make api calls at every interval', async () => {
+        const mockedOnSuccess = jest.fn(() => {
+          return true;
+        });
+        shallowMount(VuePolling, {
+          propsData: {
+            url: url,
+            onSuccess: mockedOnSuccess,
+            onFailure: onFailure
+          },
+          slots: {
+            'vue-polling': '<div id="pollingSlot" slot="vue-polling"><p>Hi I am polling</p></div>'
+          }
+        });
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        jest.runAllTimers();
+        expect(fetch).toHaveBeenCalled();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(mockedOnSuccess).toHaveBeenCalled();
+        await Promise.resolve();
+        expect(setTimeout).toHaveBeenCalledTimes(2);
+        jest.runAllTimers();
+        expect(fetch).toHaveBeenCalled();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(mockedOnSuccess).toHaveBeenCalled();
+      });
+    });
+    describe('error test cases', () => {
+      beforeAll(() => {
+        window.fetch = jest.fn().mockImplementation(() => {
+          return new Promise((resolve, reject) => {
+            reject(true);
+          });
+        });
+      });
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+      afterEach(() => {
+        jest.clearAllTimers();
+      });
+      test('onFailure should retry equal to config.retryTimes', async () => {
+        const retryCount = 4;
+        const wrapper = shallowMount(VuePolling, {
+          propsData: {
+            url: url,
+            retryCount: retryCount,
+            onSuccess: onSuccess,
+            onFailure: onFailure
+          },
+          slots: {
+            'vue-polling': '<div id="pollingSlot" slot="vue-polling"><p>Hi I am polling</p></div>'
+          }
+        });
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        for (let i = 0; i < retryCount; i++) {
+          jest.runAllTimers();
+          expect(fetch).toHaveBeenCalledTimes(i + 1);
+          for (let i = 0; i < retryCount + 1; i++) {
+            await Promise.resolve(true);
+          }
+          expect(wrapper.vm.isPolling).toBeTruthy();
+        }
+        jest.runAllTimers();
+        for (let i = 0; i < retryCount + 1; i++) {
+          await Promise.resolve(true);
+        }
+        expect(wrapper.vm.isPolling).toBeFalsy();
       });
     });
   });
