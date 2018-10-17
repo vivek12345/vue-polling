@@ -30,7 +30,7 @@ npm i vue-polling --save
     :headers="headers object" // this is optional
     :body="JSON.stringify(data)" // data to send in a post call. Should be stringified always
   >
-    <div slot-scope="{ isPolling, startPolling, stopPolling }">
+    <div slot="vue-polling" slot-scope="{ isPolling, startPolling, stopPolling }">
       <p v-if="isPolling">Hi I am polling</p>
       <p v-else>Hi I am not polling</p>
     </div>
