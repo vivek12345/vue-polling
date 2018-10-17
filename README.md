@@ -1,5 +1,6 @@
 # 🔔 vue-polling
 
+[![Build Status](https://travis-ci.com/vivek12345/vue-polling.svg)](https://travis-ci.com/vivek12345/vue-polling)
 
 Easy to use polling service built with vue.
 
