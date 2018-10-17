@@ -1,0 +1,105 @@
+{
+  "name": "vue-polling",
+  "version": "1.0.0",
+  "description": "Polling an API made easy with vue-polling",
+  "keywords": [
+    "vue",
+    "polling",
+    "vue-polling"
+  ],
+  "main": "dist/vue-polling.js",
+  "files": [
+    "lib",
+    "dist",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivek12345/vue-polling.git"
+  },
+  "author": "Vivek Nayyar  <vivek.of.nayyar@gmail.com> (https://viveknayyar.in)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vivek12345/vue-polling/issues"
+  },
+  "homepage": "https://github.com/vivek12345/vue-polling#readme",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test jest",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:coverage": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix src/",
+    "build": "npm run clean:umd && cross-env NODE_ENV=production webpack",
+    "clean:es": "rimraf lib/*",
+    "clean:umd": "rimraf dist/*"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,vue}": [
+      "npm run eslint:fix",
+      "git add"
+    ],
+    "src/**/*.{js,jsx,vue,json,css}": [
+      "prettier --config .prettierrc --write",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@vue/test-utils": "^1.0.0-beta.25",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^9.0.0",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^8.0.0",
+    "coveralls": "^3.0.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.4.0",
+    "eslint-plugin-vue": "^5.0.0-beta.3",
+    "jest": "^23.5.0",
+    "jest-cli": "^23.5.0",
+    "prettier": "^1.14.2",
+    "vue": "^2.5.17",
+    "vue-jest": "^3.0.0",
+    "vue-loader": "^15.4.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.7"
+  },
+  "peerDependencies": {
+    "vue": ">=15.0.0",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,mjs}"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",
+      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
+    ],
+    "testEnvironment": "jsdom",
+    "testURL": "http://localhost",
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+    ],
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "vue",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node",
+      "mjs"
+    ]
+  }
+}
