@@ -39,7 +39,6 @@ npm i vue-polling --save
 
 ```js
 <script>
-<script>
 import VuePolling from "VuePolling";
 
 export default {
